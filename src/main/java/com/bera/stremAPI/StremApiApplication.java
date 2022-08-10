@@ -4,7 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,7 +80,25 @@ public class StremApiApplication {
 				.limit(1)
 				.collect(Collectors.toList());
 		System.out.println("limit out the Employee"+limitEmployee);
+
+		//sorting -> sorting the employee by name
+		List<Employee> sortedEmployee = employeeList.stream()
+				.sorted((o1,o2) -> o1.getFirstName()
+						.compareToIgnoreCase(o2.getFirstName()))
+				.collect(Collectors.toList());
+		System.out.println("sorted the employee by name"+sortedEmployee);
+
+		//min or max data using stream API
+		employeeList.stream()
+				.max(Comparator.comparing(Employee::getSalary))
+				.orElseThrow(NoSuchElementException::new);
+
+		//reduce -> if we want to accumulate all the salary to sum or multipication and other then we can use reduce
+		Double totalSal = employeeList.stream()
+				.map(employee -> employee.getSalary())
+				.reduce(0.0,Double::sum);
+
+		System.out.println("Total Salary of all employee -> "+totalSal);
 	}
 
-	//
 }
